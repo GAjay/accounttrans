@@ -1,4 +1,6 @@
-<html lang="en">
+<?php
+	
+?><html lang="en">
 
 	<head>
 		<meta charset="utf-8">
@@ -7,7 +9,6 @@
 		<title>Create Member</title>
 
 		<link rel="stylesheet" href="css/style.css">
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
 		<script type="text/javascript" src="js/jquery-1.4.1.min.js"></script>
 	</head>
 
@@ -57,7 +58,7 @@
 					<input type="submit" id="submit">
 				</div>
 			</form>
-			<p class="text--center">Go to <a href="signup.php">Login Page</a></p>
+			<p class="text--center">Go to <a href="index.php">Login Page</a></p>
 		</div>
 	</body>
 
