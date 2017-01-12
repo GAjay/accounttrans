@@ -1,38 +1,26 @@
 <?php
 	include('configure/config.php');
-	$error = null;
 	if(isset($_GET['create'])){
 		echo '<h3 style="color:yellow;">USER CREATED</h3>';
 	}
-	if(isset($_GET['permission'])){
-		echo '<h3 style="color:yellow;">You Have Not Permission to Create Members</h3>';
-	}
-	if(isset($_GET['error'])){
-		$error = "Your Username or Password is invalid";
-	}
-	if(isset($_GET['updated'])){
-		echo '<h3 style="color:yellow;">Updated your profile</h3>';
-	}
 	session_start();
+	$error = null;
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		$myusername = mysqli_real_escape_string($db,$_POST['username']);
 		$mypassword = mysqli_real_escape_string($db,$_POST['password']); 
-		$mypassword = md5($mypassword);
+		//$mypassword = md5($mypassword);
 
-		$sql = "SELECT `partyname`, `access` FROM users WHERE username = '$myusername' and password = '$mypassword'";
+		$sql = "SELECT `access` FROM users WHERE username = '$myusername' and password = '$mypassword'";
 		$result = mysqli_query($db,$sql);
-		$row = mysqli_fetch_array($result);
+		$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+		$active = $row['access'];
 
-		$count = mysqli_num_rows($result);
-
-		if($count == 1) {
-			$_SESSION['login_user']= $myusername;
-			$_SESSION['permission'] = $row['access'];
-            header("Location: welcome.php");
+		if($active == 8) {
+            header("Location: signup.php");
 		}
 		else {
-			header("Location: index.php?error=true");
+			header("Location: index.php?permission=false");
 		}
 	}
 ?>
@@ -51,7 +39,7 @@
 
 	<body class="align">
 		<h1 style="color:white;">New India Transport Company</h1>
-		<h3 style="color:white;">Login</h3><br>
+		<p style="color:yellow;">To create members you have to login with specail account<br>Please Login</p>
 		<div class="grid">
 
 			<form action="" method="POST" class="form login">
@@ -67,12 +55,12 @@
 			</div>
 
 			<div class="form__field">
-				<input type="submit" value="Sign In">
+				<input type="submit" value="Let me in!">
 			</div>
 
 			</form>
 
-			<p class="text--center"><a href="signup_check.php">Create Member</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p>
+			<p class="text--center">Back to <a href="index.php">Login Page</a></p>
 			
 			<h4 style="color:red;"><?php echo $error ?></h4>
 
