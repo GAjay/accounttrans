@@ -22,7 +22,7 @@
 		<script> var user = "<?php echo $user;?>";var perm = "<?php echo $perm;?>";</script>
 	</head>
 	<body style="padding:2%"><br><BR>
-		<?phpdate( 'Y-m-d H:i:s') ?>
+		<?php date( 'Y-m-d H:i:s') ?>
 		
 		<div align="center">
 		<form action="push/home_value.php?user=<?php echo $user;?>&perm=<?php echo $perm;?>" method="post">
