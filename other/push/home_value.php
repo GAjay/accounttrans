@@ -31,7 +31,8 @@
 		else{echo'else';
 			if($_POST['fn']=='update_record'){
 				if(isset($_POST['count'])){
-				/*foreach($_POST['count'] as $upload_record){
+				foreach($_POST['count'] as $upload_record){
+					$id = $_POST[$upload_record.'_id_value'];
 					$GRNo = $_POST[$upload_record.'_g_r_no'];
 					$marka = $_POST[$upload_record.'_marka'];
 					$nag = $_POST[$upload_record.'_nag'];
@@ -44,9 +45,9 @@
 					$drivername = $_POST[$upload_record.'_drivername'];
 					$partyname = $_POST[$upload_record.'_partyname'];
 					$updated_at = date( 'Y-m-d H:i:s');
-					$sql = ("UPDATE `challan` SET `G.R.No`=[value-1],`marka`=[value-2],`nag`=[value-3],`particular`=[value-4],`weight`=[value-5],`freight`=[value-6],`addedby`=[value-7],`paid`=[value-8],`dateofarrival`=[value-9],`truckno`=[value-10],`drivername`=[value-11],`partyname`=[value-12],`created_at`=[value-13],`updated_at`=[value-14] WHERE 1 `challan` (`G.R.No`, `marka`, `nag`, `particular`, `weight`, `freight`, `paid`, `dateofarrival`, `truckno`, `drivername`, `partyname`, `created_at`, `updated_at`) VALUES ('$GRNo', '$marka', '$nag', '$particular', '$weight', '$freight', '$paid', '$dateofarrival', '$truckno', '$drivername', '$partyname', '$updated_at')");
+					$sql = ("UPDATE `challan` SET `G.R.No`='$GRNo', `marka`='$marka', `nag`='$nag', `particular`='$particular', `weight`='$weight', `freight`='$freight', `dateofarrival`='$dateofarrival', `truckno`='$truckno', `drivername`='$drivername', `partyname`='$partyname', `updated_at`='$updated_at' WHERE `ID`='$id'");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);}
-				$msg = 'Selected Challan updated successfully';*/}
+				$msg = 'Selected Challan updated successfully';}
 				else{
 					$msg = 'Please Select atleast one row';
 				}
@@ -54,22 +55,10 @@
 			else if($_POST['fn']=='paid_record'){
 				if(isset($_POST['count'])){
 				foreach($_POST['count'] as $upload_record){
-					$GRNo = $_POST[$upload_record.'_g_r_no'];
-					$marka = $_POST[$upload_record.'_marka'];
-					$nag = $_POST[$upload_record.'_nag'];
-					$particular = $_POST[$upload_record.'_particular'];
-					$weight = $_POST[$upload_record.'_weight'];
-					$freight = $_POST[$upload_record.'_freight'];
-					$addedby = $user;
-					$paid = 0;
-					$dateofarrival = $_POST[$upload_record.'_dateofarrival'];
-					$truckno = $_POST[$upload_record.'_truckno'];
-					$drivername = $_POST[$upload_record.'_drivername'];
-					$partyname = $_POST[$upload_record.'_partyname'];
-					$created_at = date( 'Y-m-d H:i:s');
+					$id = $_POST[$upload_record.'_id_value'];
 					$updated_at = date( 'Y-m-d H:i:s');
-					$sql = ("UPDATE `challan` SET `paid`='1'
-					WHERE `G.R.No`='$GRNo' AND `marka`='$marka' AND `nag`='$nag' AND `dateofarrival`='$dateofarrival' AND `truckno`='$truckno'");
+					$sql = ("UPDATE `challan` SET `paid`='1', `updated_at`='$updated_at'
+					WHERE `ID`='$id'");
 					$result = $db->query($sql) or die("Sql Error :" . $db->error);
 					$msg = 'Selected Challan uploaded on paid record successfully';
 				}}
