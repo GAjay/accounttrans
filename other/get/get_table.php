@@ -136,6 +136,7 @@ else{
 		}
 ?>
 <script><?php $j=$count;
+		if(preg_match($ptrn_update,$perm)){
 		while($count>0){
 			echo '$("#'.$count.'").click(function(){
 				if($(this).is(":checked")){
@@ -147,10 +148,12 @@ else{
 			});';
 			$count--;
 		}
+		}
 	?>
 	$("#all_select").click(function(){
 			$('input:checkbox').not(this).attr('checked', this.checked);
 			<?php 
+				if(preg_match($ptrn_update,$perm)){
 				while($j>0){echo '
 					if($(this).is(":checked")){
 						$(".'.$j.'_read").attr("readonly",false);
@@ -159,6 +162,7 @@ else{
 						$(".'.$j.'_read").attr("readonly",true);
 					}';
 					$j--;
+				}
 				}
 			?>
 		});</script>
