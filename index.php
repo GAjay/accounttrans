@@ -14,6 +14,9 @@
 		echo '<h3 style="color:yellow;">Updated your profile</h3>';
 	}
 	session_start();
+	if(isset($_SESSION['login_user']) && $_SESSION['permission'] ){
+		header('Location: welcome.php');
+	}
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		$myusername = mysqli_real_escape_string($db,$_POST['username']);
