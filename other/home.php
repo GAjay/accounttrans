@@ -11,7 +11,7 @@
 	$ptrn_update = "/3/";
 	$ptrn_paid = "/2/";
 	$ptrn_add = "/1/";
-	$readonly = null;
+	$readonly = 'readonly';//null;
 	if(!preg_match($ptrn_update,$perm)){$readonly = 'readonly';}
 	
 ?>
@@ -22,7 +22,6 @@
 		<script> var user = "<?php echo $user;?>";var perm = "<?php echo $perm;?>";</script>
 	</head>
 	<body style="padding:2%"><br><BR>
-		<?phpdate( 'Y-m-d H:i:s') ?>
 		
 		<div align="center">
 		<form action="push/home_value.php?user=<?php echo $user;?>&perm=<?php echo $perm;?>" method="post">
@@ -42,15 +41,12 @@
 					<th>addedby</th>
 					<th>dateofarrival</th>
 					<th>truckno</th>
-					<th>drivername</th>
 					<th>partyname</th>
-					<th>created_at</th>
-					<th>updated_at</th>
 				</tr>
 				<tr class="fl">
 					<?php
 						if(preg_match($ptrn_update,$perm)||preg_match($ptrn_paid,$perm)){
-							echo '<th></th>';
+							echo '<th><input type="checkbox" id="all_select" ></th>';
 						}
 					?>
 					<th><input type="number" id="grn" list="grn_li"></th>
@@ -81,9 +77,6 @@
 					<th><input type="date" id="doa"></th>
 					<th></th>
 					<th></th>
-					<th></th>
-					<th></th>
-					<th></th>
 				</tr>
 				<?php
 					$sql = ("SELECT * FROM `challan` WHERE `paid`=0");
@@ -93,22 +86,20 @@
 						echo '<tr class="j">';
 							$count++;
 							if(preg_match($ptrn_update,$perm)||preg_match($ptrn_paid,$perm)){
-								echo '<td><input type="checkbox" name="count[]" value="'.$count.'" ></td>';
+								echo '<td><input type="checkbox" id="'.$count.'" name="count[]" value="'.$count.'" >
+								<input type="hidden" name="'.$count.'_id_value" value="'.$row['ID'].'"></td>';
 							}
 							echo '
-							<td><input type="number" name="'.$count.'_g_r_no" value="'.$row['G.R.No'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$count.'_marka" value="'.$row['marka'].'" '.$readonly.'></td>
-							<td><input type="number" name="'.$count.'_nag" value="'.$row['nag'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$count.'_particular" value="'.$row['particular'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$count.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="number" name="'.$count.'_g_r_no" value="'.$row['G.R.No'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="text" name="'.$count.'_marka" value="'.$row['marka'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="number" name="'.$count.'_nag" value="'.$row['nag'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="text" name="'.$count.'_particular" value="'.$row['particular'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="text" name="'.$count.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
 							<td><input type="text" name="'.$count.'_addedby" value="'.$row['addedby'].'" readonly></td>
-							<td><input type="" name="'.$count.'_dateofarrival" value="'.$row['dateofarrival'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$count.'_truckno" value="'.$row['truckno'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$count.'_drivername" value="'.$row['drivername'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.'></td>
-							<td><input type="" name="'.$count.'_created_at" value="'.$row['created_at'].'" readonly></td>
-							<td><input type="" name="'.$count.'_updated_at" value="'.$row['updated_at'].'" readonly.></thd>
+							<td><input class="'.$count.'_read" type="" name="'.$count.'_dateofarrival" value="'.$row['dateofarrival'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="text" name="'.$count.'_truckno" value="'.$row['truckno'].'" '.$readonly.'></td>
+							<td><input class="'.$count.'_read" type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.'></td>
 						</tr>';
 					}
 				?>
@@ -119,7 +110,7 @@
 			<br><br><br>
 			<input id="fn" type="hidden" name="fn">
 			<?php
-				if($readonly != "readonly"){
+				if(preg_match($ptrn_update,$perm)){
 					echo '<button id="update" onclick="update_fn()" type="submit">Update Challan</button> ';
 				}
 				if(preg_match($ptrn_paid,$perm)||preg_match($ptrn_update,$perm)){
@@ -145,4 +136,35 @@
 	function paid_fn(){
 		$('#fn').val('paid_record');
 	};
+	<?php $j=$count;
+		if(preg_match($ptrn_update,$perm)){
+		while($count>0){
+			echo '$("#'.$count.'").click(function(){
+				if($(this).is(":checked")){
+					$(".'.$count.'_read").attr("readonly",false);
+				}
+				else{
+					$(".'.$count.'_read").attr("readonly",true);
+				}
+			});';
+			$count--;
+		}
+		}
+	?>
+	$("#all_select").click(function(){
+			$('input:checkbox').not(this).attr('checked', this.checked);
+			<?php
+				if(preg_match($ptrn_update,$perm)){
+				while($j>0){echo '
+					if($(this).is(":checked")){
+						$(".'.$j.'_read").attr("readonly",false);
+					}
+					else{
+						$(".'.$j.'_read").attr("readonly",true);
+					}';
+					$j--;
+				}
+				}
+			?>
+		});
 </script>
