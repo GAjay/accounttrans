@@ -22,7 +22,6 @@
 		<script> var user = "<?php echo $user;?>";var perm = "<?php echo $perm;?>";</script>
 	</head>
 	<body style="padding:2%"><br><BR>
-		<?phpdate( 'Y-m-d H:i:s') ?>
 		
 		<div align="center">
 		<form action="push/home_value.php?user=<?php echo $user;?>&perm=<?php echo $perm;?>" method="post">
@@ -138,6 +137,7 @@
 		$('#fn').val('paid_record');
 	};
 	<?php $j=$count;
+		if(preg_match($ptrn_update,$perm)){
 		while($count>0){
 			echo '$("#'.$count.'").click(function(){
 				if($(this).is(":checked")){
@@ -149,10 +149,12 @@
 			});';
 			$count--;
 		}
+		}
 	?>
 	$("#all_select").click(function(){
 			$('input:checkbox').not(this).attr('checked', this.checked);
-			<?php 
+			<?php
+				if(preg_match($ptrn_update,$perm)){
 				while($j>0){echo '
 					if($(this).is(":checked")){
 						$(".'.$j.'_read").attr("readonly",false);
@@ -161,6 +163,7 @@
 						$(".'.$j.'_read").attr("readonly",true);
 					}';
 					$j--;
+				}
 				}
 			?>
 		});
