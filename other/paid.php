@@ -12,16 +12,12 @@
 			$i_change = $_POST['i_change'];
 			$s = explode(",",$i_change);
 			foreach($s as $i){
+				$id = $_POST[$i.'_id_value'];
 				$weight = $_POST[$i.'_weight'];
 				$freight = $_POST[$i.'_freight'];
-				$gr_no = $_POST[$i.'_gr_no'];
-				$marka = $_POST[$i.'_marka'];
-				$nag = $_POST[$i.'_nag'];
-				$dateofarrival = $_POST[$i.'_dateofarrival'];
-				$truckno = $_POST[$i.'_truckno'];
 				$sql = ("UPDATE `challan` SET 
 				`weight`='$weight',`freight`='$freight', `updated_at` = '".date( 'Y-m-d H:i:s')."'
-				WHERE `G.R.No`='$gr_no' AND `marka`='$marka' AND `nag`='$nag' AND `dateofarrival`='$dateofarrival' AND `truckno`='$truckno'");
+				WHERE `ID`='$id'");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);
 				if($result){
 					echo '<h2>Updated Data</h2>';
@@ -49,10 +45,7 @@
 					<th>addedby</th>
 					<th>dateofarrival</th>
 					<th>truckno</th>
-					<th>drivername</th>
 					<th>partyname</th>
-					<th>created_at</th>
-					<th>updated_at</th>
 				</tr>
 				<?php
 					$sql = ("SELECT * FROM `challan` WHERE `paid`=1");
@@ -62,19 +55,16 @@
 					$i=1;
 					while($row = mysqli_fetch_array($result)){
 						echo '<tr>
-							<td><input name="'.$i.'_gr_no" value="'.$row['G.R.No'].'" readonly></td>
-							<td><input name="'.$i.'_marka" value="'.$row['marka'].'" readonly></td>
-							<td><input name="'.$i.'_nag" value="'.$row['nag'].'" readonly></td>
+							<td><input type="hidden" name="'.$i.'_id_value" value="'.$row['ID'].'">'.$row['G.R.No'].'</td>
+							<td>'.$row['marka'].'</td>
+							<td>'.$row['nag'].'</td>
 							<td>'.$row['particular'].'</td>
 							<td><input type="text" name="'.$i.'_weight" id="'.$i.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
 							<td><input type="text" name="'.$i.'_freight" id="'.$i.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
 							<td>'.$row['addedby'].'</td>
-							<td><input name="'.$i.'_dateofarrival" value="'.$row['dateofarrival'].'" readonly></td>
-							<td><input name="'.$i.'_truckno" value="'.$row['truckno'].'" readonly></td>
-							<td>'.$row['drivername'].'</td>
+							<td>'.$row['dateofarrival'].'</td>
+							<td>'.$row['truckno'].'</td>
 							<td>'.$row['partyname'].'</td>
-							<td>'.$row['created_at'].'</td>
-							<td>'.$row['updated_at'].'</thd>
 						</tr>';
 						$i++;
 					}
