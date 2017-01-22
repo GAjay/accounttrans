@@ -1,7 +1,7 @@
 	$(document).ready(function(){
-		var count = 0;
+		
 		$('#loading').hide();
-		$('#grn').keyup(function(){
+		$('#grn').bind('keyup change', function(){
 			$('.j').remove();
 			$('#loading').show();
 			$('#mrk_li_option').find('option').remove();
@@ -40,7 +40,7 @@
 		});
 //--------------------------------------------------------------------------------		
 //---------------------------------------------------------------------------------
-		$('#mrk').keyup(function(){
+		$('#mrk').bind('keyup change', function(){
 			var mrk = $(this).val();
 			var dataString;
 			$('.j').remove();
@@ -74,7 +74,7 @@
 		});
 //--------------------------------------------------------------------------------		
 //---------------------------------------------------------------------------------		
-		$('#frght').keyup(function(){
+		$('#frght').bind('keyup change', function(){
 			var frght = $(this).val();
 			var dataString;
 			$('.j').remove();
@@ -214,46 +214,4 @@
 			});
 		});
 //-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-		$('#add').click(function(){
-			$('h3').remove();
-			$('#loading').show();
-			if(count == 0){
-				var new_doa = null;
-				$('#update').remove();
-				$('#paid').remove();
-				$('#fn').remove();
-				$('#main_table').find('tr').remove();
-				html = '<tr><th>G.R.No</th><th>Marka</th><th>Nag</th><th>particular</th><th>weight</th><th>freight</th><th>dateofarrival</th><th>truckno</th><th>drivername</th><th>partyname</th></tr>'
-				$('#main_table').append(html);
-			}
-			else{
-				new_doa = $('#'+count+'_dateofarrival').val();
-			}
-				count++;
-			html = '<tr class="js"><td><input type="number" name="'+count+'_g_r_no" ></td>'+
-					'<td><input type="text" name="'+count+'_marka"></td>'+
-					'<td><input type="number" name="'+count+'_nag"></td>'+
-					'<td><input type="text" name="'+count+'_particular"></td>'+
-					'<td><input type="text" name="'+count+'_weight"></td>'+
-					'<td><input type="text" name="'+count+'_freight"></td>'+
-					'<td><input type="date" id="'+count+'_dateofarrival" name="'+count+'_dateofarrival"></td>'+
-					'<td><input type="text" name="'+count+'_truckno"></td>'+
-					'<td><input type="text" name="'+count+'_drivername"></td>'+
-					'<td><input type="text" name="'+count+'_partyname"></td></tr>';
-			$('#main_table').append(html);
-			if(new_doa != null){
-				$('#'+count+'_dateofarrival').val(new_doa);
-			}
-			else{
-				$("#add").html('Add Row');
-				$("#upload_record_fild").html('<button id="upload_record_btn" type="submit">Upload Record</button>');
-				$("#cancel_fild").html('<button id="cancel_btn" type="submit">Cancel</button>');
-			}
-			$('#loading').hide();
-			$('#upload_record').val(count);
-		});
-		$("#cancel_fild").click(function(){
-			window.location.href = 'home.php?user='+user+'&perm='+perm;
-		});
 	});

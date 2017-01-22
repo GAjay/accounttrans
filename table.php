@@ -49,7 +49,8 @@
 		$sql = ("SELECT * FROM `challan`");
 		$result = $db->query($sql) or die("Sql Error :" . $db->error);
 		while($row = mysqli_fetch_array($result)){
-			echo '<tr>
+			echo '<tr>		
+		<td><input type="number" value="'.$row['challanNo'].'"></td>
 		<td><input type="number" value="'.$row['G.R.No'].'"></td>
 		<td><input type="number" value="'.$row['Marka'].'"></td>
 		<td><input type="number" value="'.$row['Nag'].'"></td>
@@ -60,7 +61,6 @@
 		<td><input type="number" value="'.$row['paid'].'"></td>
 		<td><input type="number" value="'.$row['dateofarrival'].'"></td>
 		<td><input type="number" value="'.$row['truckno'].'"></td>
-		<td><input type="number" value="'.$row['drivername'].'"></td>
 		<td><input type="number" value="'.$row['partyname'].'"></td>
 		<td><input type="number" value="'.$row['created_at'].'"></td>
 		<td><input type="number" value="'.$row['updated_at'].'"></thd>

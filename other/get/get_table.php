@@ -122,20 +122,29 @@ else{
 					<input type="hidden" name="'.$count.'_id_value" value="'.$row['ID'].'"></td>';
 				}
 				echo '
-				<td><input class="'.$count.'_read" type="number" name="'.$count.'_g_r_no" value="'.$row['G.R.No'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_marka" value="'.$row['marka'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="number" name="'.$count.'_nag" value="'.$row['nag'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_particular" value="'.$row['particular'].'" '.$readonly.'></td>
+				<td>'.$row['challanNo'].'</td>
+				<td>'.$row['G.R.No'].'</td>
+				<td>'.$row['marka'].'</td>
+				<td>'.$row['nag'].'</td>
 				<td><input class="'.$count.'_read" type="text" name="'.$count.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
 				<td><input class="'.$count.'_read" type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
-				<td><input type="text" name="'.$count.'_addedby" value="'.$row['addedby'].'" readonly></td>
-				<td><input class="'.$count.'_read" type="" name="'.$count.'_dateofarrival" value="'.$row['dateofarrival'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_truckno" value="'.$row['truckno'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.'></td>
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.' list="party_list">
+				<datalist id="party_list">
+				<select>';
+					$sql1="SELECT `name` FROM `party`";
+					$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
+					while($row1 = mysqli_fetch_array($result1)){
+						echo '<option>'.$row1['name'].'</option>';
+					}
+				echo '</select>
+				</datalist></td>
+				<td>'.$row['dateofarrival'].'</td>
+				<td>'.$row['truckno'].'</td>
 			</tr>';
 		}
 ?>
-<script><?php $j=$count;
+<script>
+<?php $j=$count;
 		if(preg_match($ptrn_update,$perm)){
 		while($count>0){
 			echo '$("#'.$count.'").click(function(){

@@ -8,6 +8,7 @@
 	$j=0;
 	$change=array();
 	if($_SERVER['REQUEST_METHOD']=='POST'){
+		$result;
 		if($_POST['i_change']!='-1'){
 			$i_change = $_POST['i_change'];
 			$s = explode(",",$i_change);
@@ -19,10 +20,10 @@
 				`weight`='$weight',`freight`='$freight', `updated_at` = '".date( 'Y-m-d H:i:s')."'
 				WHERE `ID`='$id'");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);
-				if($result){
+			}	
+			if($result){
 					echo '<h2>Updated Data</h2>';
 				}
-			}	
 		}
 	}
 ?>
@@ -36,16 +37,15 @@
 		<form action="" method="post">
 			<table>
 				<tr>
+					<th>Challan No</th>
 					<th>G.R.No</th>
 					<th>Marka</th>
 					<th>Nag</th>
-					<th>particular</th>
 					<th>weight</th>
 					<th>freight</th>
-					<th>addedby</th>
+					<th>partyname</th>
 					<th>dateofarrival</th>
 					<th>truckno</th>
-					<th>partyname</th>
 				</tr>
 				<?php
 					$sql = ("SELECT * FROM `challan` WHERE `paid`=1");
@@ -55,16 +55,15 @@
 					$i=1;
 					while($row = mysqli_fetch_array($result)){
 						echo '<tr>
+							<td>'.$row['challanNo'].'</td>
 							<td><input type="hidden" name="'.$i.'_id_value" value="'.$row['ID'].'">'.$row['G.R.No'].'</td>
 							<td>'.$row['marka'].'</td>
 							<td>'.$row['nag'].'</td>
-							<td>'.$row['particular'].'</td>
 							<td><input type="text" name="'.$i.'_weight" id="'.$i.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
 							<td><input type="text" name="'.$i.'_freight" id="'.$i.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
-							<td>'.$row['addedby'].'</td>
+							<td>'.$row['partyname'].'</td>
 							<td>'.$row['dateofarrival'].'</td>
 							<td>'.$row['truckno'].'</td>
-							<td>'.$row['partyname'].'</td>
 						</tr>';
 						$i++;
 					}
@@ -97,7 +96,7 @@
 		$('#total_weight').val(total_weight);
 		<?php
 		while($j>0){
-		echo "$('#".$j."_weight').change(function(){
+		echo "$('#".$j."_weight').bind('keyup change', function(){
 			total_weight=0;
 			i = $('#i').val()-1;
 			while(i>0){
@@ -108,7 +107,7 @@
 			i_change.push(".$j.");
 			$('#i_change').val(i_change);
 		});
-		$('#".$j."_freight').change(function(){
+		$('#".$j."_freight').bind('keyup change', function(){
 			total_freight=0;
 			i = $('#i').val()-1;
 			while(i>0){

@@ -2,6 +2,8 @@
 	include('configure/session.php');
     $user = $_SESSION['login_user'];
 	$perm = $_SESSION['permission'];
+	$prtn_admin1 = "/8/";
+	$prtn_admin2 = "/9/";
 ?>
 <html>
 
@@ -23,6 +25,12 @@
 			<button type="submit" onclick="return paid()" class="left">Paid Entry</button><br />
 			<button type="submit" onclick="return print_value()" class="left">Print</button><br />
 			<button type="submit" onclick="return profile()" class="left">Profile</button><br />
+			<?php
+				if(preg_match($prtn_admin1,$perm)&&preg_match($prtn_admin2,$perm)){
+					echo '<button type="submit" onclick="return party()" class="left">Parties Infoarmation</button><br />
+						<button type="submit" onclick="return member()" class="left">Members Information</button><br />';
+				}
+			?>
 		</div>
         <script> var user = "<?php echo $_SESSION['login_user'];?>";var perm = "<?php echo $_SESSION['permission'];?>";</script>
         <div id="main">

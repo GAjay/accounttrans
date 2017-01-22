@@ -1,4 +1,6 @@
 <?php
+	
+	
 	include('configure/config.php');
 	$error = null;
 	if(isset($_GET['create'])){
@@ -75,7 +77,7 @@
 
 			</form>
 
-			<p class="text--center"><a href="signup_check.php">Create Member</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p>
+			<!--p class="text--center"><a href="signup_check.php">Create Member</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p-->
 			
 			<h4 style="color:red;"><?php echo $error ?></h4>
 
