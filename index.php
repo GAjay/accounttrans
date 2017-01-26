@@ -3,9 +3,6 @@
 	
 	include('configure/config.php');
 	$error = null;
-	if(isset($_GET['create'])){
-		echo '<h3 style="color:yellow;">USER CREATED</h3>';
-	}
 	if(isset($_GET['permission'])){
 		echo '<h3 style="color:yellow;">You Have Not Permission to Create Members</h3>';
 	}
