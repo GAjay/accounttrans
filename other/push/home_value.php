@@ -24,8 +24,8 @@
 				if($partyname==''){
 					$partyname='Default';
 				}
-				$created_at = date( 'Y-m-d H:i:s');
-				$updated_at = date( 'Y-m-d H:i:s');
+				$created_at = date( 'Y-m-d');
+				$updated_at = date( 'Y-m-d');
 				if($GRNo!=''){
 				$sql = ("INSERT INTO `challan`(`challanNo`, `G.R.No`, `marka`, `nag`, `particular`, `weight`, `freight`, `addedby`, `paid`, `dateofarrival`, `truckno`, `partyname`, `created_at`, `updated_at`) VALUES ('$challan','$GRNo', '$marka', '$nag', '$particular', '$weight', '$freight', '$addedby', '$paid', '$dateofarrival', '$truckno', '$partyname', '$created_at', '$updated_at')");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);
@@ -42,24 +42,10 @@
 					$weight = $_POST[$upload_record.'_weight'];
 					$freight = $_POST[$upload_record.'_freight'];
 					$partyname = $_POST[$upload_record.'_partyname'];
-					$updated_at = date( 'Y-m-d H:i:s');
+					$updated_at = date( 'Y-m-d');
 					$sql = ("UPDATE `challan` SET `weight`='$weight', `freight`='$freight', `partyname`='$partyname', `updated_at`='$updated_at' WHERE `ID`='$id'");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);}
 				$msg = 'Selected Challan updated successfully';}
-				else{
-					$msg = 'Please Select atleast one row';
-				}
-			}
-			else if($_POST['fn']=='paid_record'){
-				if(isset($_POST['count'])){
-				foreach($_POST['count'] as $upload_record){
-					$id = $_POST[$upload_record.'_id_value'];
-					$updated_at = date( 'Y-m-d H:i:s');
-					$sql = ("UPDATE `challan` SET `paid`='1', `updated_at`='$updated_at'
-					WHERE `ID`='$id'");
-					$result = $db->query($sql) or die("Sql Error :" . $db->error);
-					$msg = 'Selected Challan uploaded on paid record successfully';
-				}}
 				else{
 					$msg = 'Please Select atleast one row';
 				}

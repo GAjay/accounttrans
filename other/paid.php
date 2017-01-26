@@ -1,123 +1,87 @@
-<?PHP
+<?php
 	include('../configure/config.php');
-	$user = $_GET['user'];
-	$perm = $_GET['perm'];
-	$ptrn = "/3/";
-	$readonly = null;
-	if(!preg_match($ptrn,$perm)){$readonly = 'readonly';}
-	$j=0;
-	$change=array();
-	if($_SERVER['REQUEST_METHOD']=='POST'){
-		$result;
-		if($_POST['i_change']!='-1'){
-			$i_change = $_POST['i_change'];
-			$s = explode(",",$i_change);
-			foreach($s as $i){
-				$id = $_POST[$i.'_id_value'];
-				$weight = $_POST[$i.'_weight'];
-				$freight = $_POST[$i.'_freight'];
-				$sql = ("UPDATE `challan` SET 
-				`weight`='$weight',`freight`='$freight', `updated_at` = '".date( 'Y-m-d H:i:s')."'
-				WHERE `ID`='$id'");
-				$result = $db->query($sql) or die("Sql Error :" . $db->error);
-			}	
-			if($result){
-					echo '<h2>Updated Data</h2>';
-				}
-		}
+	include('../configure/session.php');
+	$user = $_SESSION['login_user'];
+	$perm = $_SESSION['permission'];
+	if(isset($_GET['msg'])){
+		echo '<h3 style="color:Black;">'.$_GET['msg'].'</h3>';
 	}
+	$ptrn_update = "/3/";
+	$ptrn_paid = "/2/";
+	$ptrn_add = "/1/";
+	$readonly = 'readonly';
+	
 ?>
 <html>
 	<head>
-	<link rel="stylesheet" href="../css/main.css">
-	<script type="text/javascript" src="../js/jquery-1.4.1.min.js"></script>
+		<link rel="stylesheet" href="../css/main.css">
+		<script type="text/javascript" src="../js/jquery-1.4.1.min.js"></script>
+		<script> var user = "<?php echo $user;?>";var perm = "<?php echo $perm;?>";</script>
+		<style>
+			input[type="text"],input[type="number"],input[type="date"]{
+				width:130px;
+			}
+		</style>
 	</head>
-	<body style="padding:2%;" align="center">
-		<br><br><h3 >Paid Challan</h3>
-		<form action="" method="post">
-			<table>
-				<tr>
-					<th>Challan No</th>
-					<th>G.R.No</th>
-					<th>Marka</th>
-					<th>Nag</th>
-					<th>weight</th>
-					<th>freight</th>
-					<th>partyname</th>
-					<th>dateofarrival</th>
-					<th>truckno</th>
-				</tr>
-				<?php
-					$sql = ("SELECT * FROM `challan` WHERE `paid`=1");
-					$result = $db->query($sql) or die("Sql Error :" . $db->error);
-					$weight = 0;
-					$freight = 0;
-					$i=1;
-					while($row = mysqli_fetch_array($result)){
-						echo '<tr>
-							<td>'.$row['challanNo'].'</td>
-							<td><input type="hidden" name="'.$i.'_id_value" value="'.$row['ID'].'">'.$row['G.R.No'].'</td>
-							<td>'.$row['marka'].'</td>
-							<td>'.$row['nag'].'</td>
-							<td><input type="text" name="'.$i.'_weight" id="'.$i.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
-							<td><input type="text" name="'.$i.'_freight" id="'.$i.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
-							<td>'.$row['partyname'].'</td>
-							<td>'.$row['dateofarrival'].'</td>
-							<td>'.$row['truckno'].'</td>
-						</tr>';
-						$i++;
-					}
-					echo '<input type="hidden" id="i" value="'.$i.'"><input type="hidden" id="i_change" name="i_change" value="-1">';
-					$j=$i-1;
-				?>
-			</table><br><br>
-			<label>Total Weight:</label><input type="text" id="total_weight" readonly><br>
-			<label>Total Freight:</label><input type="text" id="total_freight" readonly><br><br>
-			<?php 
-				if($readonly != 'readonly'){
-					echo '<button id="update" type="submit">Update</button>';
+	<body style="padding:2%"><br><BR>
+		<div align="center">
+			<h3>Select party to show challan</h3><br>
+			<label>Part Name: <select id="party_select">
+				<option>--Select--</option>
+			<?php
+				$sql1="SELECT `name` FROM `party`";
+				$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
+				while($row1 = mysqli_fetch_array($result1)){
+					echo '<option>'.$row1['name'].'</option>';
 				}
 			?>
+			</select></label><br><br><br>
+		
+		<form action="push/paid_value.php?user=<?php echo $user;?>&perm=<?php echo $perm;?>" method="post" onkeypress="return event.keyCode != 13;">
+			<button id="update" onclick="update_fn()" type="submit">Update Challan</button>   
+			<button id="paid" onclick="paid_fn()" type="submit">Paid</button>
+			<input type="hidden" id="upload_record" name="upload_record">
+			<br><BR><br>
+			<table id="main_table">
+			</table>
+			<script type="text/javascript" src="../js/home.js"></script>
+			<input id="fn" type="hidden" name="fn">
+	
 		</form>
-	</body>
+		<img align="center" src="../img/loading.gif" id="loading" height="90px">
+		</div>
+		
+		
+		</body>
 </html>
+
+
+
 <script>
-	$(document).ready(function(){
-		var i = $('#i').val()-1;
-		var i_change = [];
-		var total_weight=0;
-		var total_freight=0;
-		while(i>0){
-			total_freight = total_freight+(+$('#'+i+'_freight').val());
-			total_weight = total_weight+(+$('#'+i+'_weight').val());
-			i--;
-		}
-		$('#total_freight').val(total_freight);
-		$('#total_weight').val(total_weight);
-		<?php
-		while($j>0){
-		echo "$('#".$j."_weight').bind('keyup change', function(){
-			total_weight=0;
-			i = $('#i').val()-1;
-			while(i>0){
-				total_weight = total_weight+(+$('#'+i+'_weight').val());
-				i--;
-			}
-			$('#total_weight').val(total_weight);
-			i_change.push(".$j.");
-			$('#i_change').val(i_change);
+	$('form').hide();
+	$('#loading').hide();
+	function update_fn(){
+		$('#fn').val('update_record');
+	};
+	function paid_fn(){
+		$('#fn').val('paid_record');
+	};
+	$('#party_select').change(function(){
+		$('#loading').show();
+		$('#main_table').find('tr').remove();
+		dataString = 'party='+$(this).val();
+		$.ajax({
+			type: "POST",
+			url: "get/get_table_paid.php?user="+user+"&perm="+perm,
+			data: dataString,
+			cache: false,
+			success: function(data)
+				{
+					
+					$('#loading').hide();
+					$('#main_table').append(data);
+					$('form').show();
+				}
 		});
-		$('#".$j."_freight').bind('keyup change', function(){
-			total_freight=0;
-			i = $('#i').val()-1;
-			while(i>0){
-				total_freight = total_freight+(+$('#'+i+'_freight').val());
-				i--;
-			}
-			$('#total_freight').val(total_freight);
-			i_change.push(".$j.");
-			$('#i_change').val(i_change);
-		});";$j--;}
-		?>
 	});
 </script>

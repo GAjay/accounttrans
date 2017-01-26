@@ -72,6 +72,27 @@
 							echo'> All</label>
 							
 							<br><br>
+							<div style="border:3px solid black"><label>Connected Parties: ';
+								
+									$parties = explode(', ',$row['connected_parties']);
+									echo '<ul>';
+									if($row['connected_parties']!=''){
+									foreach($parties as $i){
+										echo '<li onclick="this.parentNode.removeChild(this);">
+											<input type="hidden" name="ingredients[]" value="'.$i.'" />
+											'.$i.'
+										</li>';
+									}
+									}echo '</ul>';
+								echo '<select onchange="selectIngredient(this);">';
+									$sql1 = ("SELECT `name` FROM `party`");
+										$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
+										while($row1 = mysqli_fetch_array($result1)){
+											echo '<option>'.$row1['name'].'</option>';
+										}
+								echo '</select></label>
+							</div><br><BR>
+							
 							<label>Add/Mobile No: <textarea name="address">'.$row["address"].'</textarea></label><br><br><br>
 							<input type="hidden" value="'.$row['ID'].'" name="id"><input type="hidden" value="" id="check1" name="check1">
 							<button id="upbtn" type="submit">Update</button>&nbsp;&nbsp;&nbsp;&nbsp;<button type="submit" onclick="window.location=\'member.php\';" id="cancle1">Cancel</button>
@@ -94,15 +115,7 @@
 					<th>Username</th>
 					<th>Marka</th>
 					<th>Access</th>
-					<!--
-					ID : int(11)
-* username : varchar(50)
-* password : varchar(50)
-* access : varchar(50)
-* marka : varchar(50)
-* partyname : varchar(50)
-* address : text-->
-					
+					<th>Connected Parties</th>
 					<th>Address or Mobile No</th>
 				</tr>
 				</thead>
@@ -124,6 +137,7 @@
 								if(preg_match($ptrn_paid,$perm1)){echo 'Paid&nbsp;&nbsp;&nbsp;';}
 								if(preg_match($ptrn_add,$perm1)){echo 'Add';}
 								echo '</td>
+								<td>'.$row['connected_parties'].'</td>
 								<td><textarea readonly>'.$row['address'].'</textarea></td>
 							</tr>';
 							$i++;	
@@ -151,4 +165,43 @@
 	$("#create_members").click(function(){
 		window.location.href='../signup.php';
 	});
+</script>
+<script>
+	function selectIngredient(select)
+{
+  var option = select.options[select.selectedIndex];
+  var ul = select.parentNode.getElementsByTagName('ul')[0];
+     
+  var choices = ul.getElementsByTagName('input');
+  for (var i = 0; i < choices.length; i++)
+    if (choices[i].value == option.value)
+      return;
+     
+  var li = document.createElement('li');
+  var input = document.createElement('input');
+  var text = document.createTextNode(option.firstChild.data);
+     
+  input.type = 'hidden';
+  input.name = 'ingredients[]';
+  input.value = option.value;
+
+  li.appendChild(input);
+  li.appendChild(text);
+  li.setAttribute('onclick', 'this.parentNode.removeChild(this);');     
+    
+  ul.appendChild(li);
+}
+
+
+
+function selectIngredient(select)
+{
+  var $ul = $(select).prev('ul');
+   
+  if ($ul.find('input[value=' + $(select).val() + ']').length == 0)
+    $ul.append('<li onclick="$(this).remove();">' +
+      '<input type="hidden" name="ingredients[]" value="' + 
+      $(select).val() + '" /> ' +
+      $(select).find('option[selected]').text() + '</li>');
+}
 </script>

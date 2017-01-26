@@ -15,8 +15,7 @@
 	$ptrn_update = "/3/";
 	$ptrn_paid = "/2/";
 	$ptrn_add = "/1/";
-	$readonly = 'readonly';//null;
-	if(!preg_match($ptrn_update,$perm)){$readonly = 'readonly';}
+	$readonly = 'readonly';
 	
 ?>
 <html>
@@ -42,12 +41,9 @@
 		
 		
 		<form action="push/home_value.php?user=<?php echo $user;?>&perm=<?php echo $perm;?>" method="post" onkeypress="return event.keyCode != 13;">
-		<?php
+			<?php
 				if(preg_match($ptrn_update,$perm)){
 					echo '<button id="update" onclick="update_fn()" type="submit">Update Challan</button> ';
-				}
-				if(preg_match($ptrn_paid,$perm)||preg_match($ptrn_update,$perm)){
-					echo ' <button id="paid" onclick="paid_fn()" type="submit">Paid</button>';
 				}
 			?>
 			<input type="hidden" id="upload_record" name="upload_record">
@@ -56,7 +52,7 @@
 			<table id="main_table">
 				<tr class="mh">
 					<?php
-						if(preg_match($ptrn_update,$perm)||preg_match($ptrn_paid,$perm)){
+						if(preg_match($ptrn_update,$perm)){
 							echo '<th></th>';
 						}
 					?>
@@ -72,7 +68,7 @@
 				</tr>
 				<tr class="fl">
 					<?php
-						if(preg_match($ptrn_update,$perm)||preg_match($ptrn_paid,$perm)){
+						if(preg_match($ptrn_update,$perm)){
 							echo '<th><input type="checkbox" id="all_select" ></th>';
 						}
 					?>
@@ -100,18 +96,18 @@
 					<th></th>
 					<th></th>
 					<th><input type="text" id="frght"></th>
-					<th></th>
+					<th><input type="text" id="party_search" value="default" list="party_list"></th>
 					<th><input type="date" id="doa"></th>
 					<th></th>
 				</tr>
 				<?php
-					$sql = ("SELECT * FROM `challan` WHERE `paid`=0");
+					$sql = ("SELECT * FROM `challan` WHERE `paid`=0 AND partyname='Default'");
 					$result = $db->query($sql) or die("Sql Error :" . $db->error);
 					$count = 0;
 					while($row = mysqli_fetch_array($result)){
 						echo '<tr class="j">';
 							$count++;
-							if(preg_match($ptrn_update,$perm)||preg_match($ptrn_paid,$perm)){
+							if(preg_match($ptrn_update,$perm)){
 								echo '<td><input type="checkbox" id="'.$count.'" name="count[]" value="'.$count.'" >
 								<input type="hidden" name="'.$count.'_id_value" value="'.$row['ID'].'"></td>';
 							}
@@ -120,7 +116,7 @@
 							<td>'.$row['G.R.No'].'</td>
 							<td>'.$row['marka'].'</td>
 							<td>'.$row['nag'].'</td>
-							<td><input class="'.$count.'_read" type="text" name="'.$count.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
+							<td>'.$row['weight'].'</td>
 							<td><input class="'.$count.'_read" type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
 							<td><input class="'.$count.'_read" type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.' list="party_list">
 								<datalist id="party_list">
@@ -160,9 +156,6 @@
 	$('#remove').hide();
 	function update_fn(){
 		$('#fn').val('update_record');
-	};
-	function paid_fn(){
-		$('#fn').val('paid_record');
 	};
 	<?php $j=$count;
 		if(preg_match($ptrn_update,$perm)){
