@@ -1,0 +1,78 @@
+<?php
+	include('../configure/config.php');
+	include('../configure/session.php');
+	$user = $_SESSION['login_user'];
+	$perm = $_SESSION['permission'];
+	$ptrn_update = "/3/";
+	$ptrn_paid = "/2/";
+	$ptrn_add = "/1/";
+	
+?>
+<html>
+	<head>
+		<link rel="stylesheet" href="../css/main.css">
+		<script type="text/javascript" src="../js/jquery-1.4.1.min.js"></script>
+		<script> var user = "<?php echo $user;?>";var perm = "<?php echo $perm;?>";</script>
+	</head>
+	<body style="padding:2%"><br>
+		
+		<div>
+			<h1 align="center">Payment Information </h1>
+			<label>Members: <select id="member">
+			<option>--select--</option>
+			<?php
+				$sql = ("SELECT `partyname` FROM `users`");
+				$result = $db->query($sql) or die("Sql Error :" . $db->error);
+				while($row = mysqli_fetch_array($result)){
+					echo '<option>'.$row['partyname'].'</option>';
+				}
+			?>
+			</select></label>
+			<label>Paties: <select id="party">
+				<option>--select--</option>
+			</select></label>
+		</div><br><Br>
+		<div id="main_table" align="center">
+		</div>
+		<div align="center"><img align="center" src="../img/loading.gif" id="loading" height="90px"></div>
+	</body>
+</html>
+
+
+
+<script>
+$('#loading').hide();
+$('#member').change(function(){
+	$('#loading').show();
+	$('#main_table').hide();
+	$('#party').find('option').remove();
+	dataString = 'member='+$(this).val();
+	$.ajax({
+		type: "POST",
+		url: "get/get_member_party.php",
+		data: dataString,
+		cache: false,
+		success: function(data)
+		{
+			$('#party').append(data);
+		}
+	});
+});
+$('#party').change(function(){
+	$('#loading').show();
+	$('#main_table').hide();
+	dataString = 'partyname='+$(this).val();
+	$.ajax({
+		type: "POST",
+		url: "get/get_member_party.php",
+		data: dataString,
+		cache: false,
+		success: function(data)
+		{
+			$('#loading').hide();
+			$('#main_table').show();
+			$('#main_table').html(data);
+		}
+	});
+});
+</script>

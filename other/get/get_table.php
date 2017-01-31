@@ -5,137 +5,66 @@
 	$ptrn_paid = "/2/";
 	$ptrn_add = "/1/";
 	include('../../configure/config.php');
-	
-if(isset($_POST['gr_no'])&&!isset($_POST['mrk'])&&!isset($_POST['frght'])&&!isset($_POST['doa'])){
+	$party=null;$gr_no=null;$mrk=null;$frght=null;$doa=null;
+	if(isset($_POST['party'])){
+		$party = $_POST['party'];
+		$party = '^'.$party.'[a-zA-Z0-9]*';
+	}
+	if(isset($_POST['gr_no'])){
 		$gr_no= $_POST['gr_no'];
 		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND `paid`=0");
 	}
-else if(!isset($_POST['gr_no'])&&isset($_POST['mrk'])&&!isset($_POST['frght'])&&!isset($_POST['doa'])){
+	if(isset($_POST['mrk'])){
 		$mrk = $_POST['mrk'];
 		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`marka` REGEXP '$mrk') AND `paid`=0");
 	}
-else if(isset($_POST['gr_no'])&&isset($_POST['mrk'])&&!isset($_POST['frght'])&&!isset($_POST['doa'])){
-		$mrk = $_POST['mrk'];
-		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$gr_no= $_POST['gr_no'];
-		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`marka` REGEXP '$mrk') AND `paid`=0");
-	}
-else if(isset($_POST['gr_no'])&&!isset($_POST['mrk'])&&isset($_POST['frght'])&&!isset($_POST['doa'])){
+	if(isset($_POST['frght'])){
 		$frght = $_POST['frght'];
 		$frght = '^'.$frght.'[0-9]*';
-		$gr_no= $_POST['gr_no'];
-		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`freight` REGEXP '$frght') AND `paid`=0");
 	}
-else if(!isset($_POST['gr_no'])&&isset($_POST['mrk'])&&isset($_POST['frght'])&&!isset($_POST['doa'])){
-		$frght = $_POST['frght'];
-		$frght = '^'.$frght.'[0-9]*';
-		$mrk = $_POST['mrk'];
-		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`marka` REGEXP '$mrk') AND (`freight` REGEXP '$frght') AND `paid`=0");
-	}
-else if(!isset($_POST['gr_no'])&&!isset($_POST['mrk'])&&isset($_POST['frght'])&&!isset($_POST['doa'])){
-		$frght = $_POST['frght'];
-		$frght = '^'.$frght.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`freight` REGEXP '$frght') AND `paid`=0");
-	}
-else if(isset($_POST['gr_no'])&&isset($_POST['mrk'])&&isset($_POST['frght'])&&!isset($_POST['doa'])){
-		$frght = $_POST['frght'];
-		$frght = '^'.$frght.'[0-9]*';
-		$mrk = $_POST['mrk'];
-		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$gr_no= $_POST['gr_no'];
-		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`marka` REGEXP '$mrk') AND (`freight` REGEXP '$frght') AND `paid`=0");
-	}
-else if(isset($_POST['gr_no'])&&isset($_POST['mrk'])&&isset($_POST['frght'])&&isset($_POST['doa'])){
+	if(isset($_POST['doa'])){
 		$doa = $_POST['doa'];
-		$frght = $_POST['frght'];
-		$frght = '^'.$frght.'[0-9]*';
-		$mrk = $_POST['mrk'];
-		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$gr_no= $_POST['gr_no'];
-		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`marka` REGEXP '$mrk') AND (`freight` REGEXP '$frght') AND `paid`=0 AND `dateofarrival`='$doa'");
+		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`partyname` REGEXP '$party') AND (`marka` REGEXP '$mrk') AND (`freight` REGEXP '$frght') AND `paid`=0");
 	}
-else if(!isset($_POST['gr_no'])&&isset($_POST['mrk'])&&isset($_POST['frght'])&&isset($_POST['doa'])){
-		$doa = $_POST['doa'];
-		$frght = $_POST['frght'];
-		$frght = '^'.$frght.'[0-9]*';
-		$mrk = $_POST['mrk'];
-		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`marka` REGEXP '$mrk') AND (`freight` REGEXP '$frght') AND `paid`=0 AND `dateofarrival`='$doa'");
+	else{
+		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`partyname` REGEXP '$party') AND (`marka` REGEXP '$mrk') AND (`freight` REGEXP '$frght') AND `paid`=0 AND `dateofarrival`='$doa'");
 	}
-else if(!isset($_POST['gr_no'])&&!isset($_POST['mrk'])&&isset($_POST['frght'])&&isset($_POST['doa'])){
-		$doa = $_POST['doa'];
-		$frght = $_POST['frght'];
-		$frght = '^'.$frght.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`freight` REGEXP '$frght') AND `paid`=0 AND `dateofarrival`='$doa'");
-	}
-else if(!isset($_POST['gr_no'])&&isset($_POST['mrk'])&&!isset($_POST['frght'])&&isset($_POST['doa'])){
-		$doa = $_POST['doa'];
-		$mrk = $_POST['mrk'];
-		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`marka` REGEXP '$mrk') AND `paid`=0 AND `dateofarrival`='$doa'");
-	}
-else if(isset($_POST['gr_no'])&&!isset($_POST['mrk'])&&!isset($_POST['frght'])&&isset($_POST['doa'])){
-		$doa = $_POST['doa'];
-		$gr_no= $_POST['gr_no'];
-		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND `paid`=0 AND `dateofarrival`='$doa'");
-	}
-else if(isset($_POST['gr_no'])&&!isset($_POST['mrk'])&&isset($_POST['frght'])&&isset($_POST['doa'])){
-		$doa = $_POST['doa'];
-		$frght = $_POST['frght'];
-		$frght = '^'.$frght.'[0-9]*';
-		$gr_no= $_POST['gr_no'];
-		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`freight` REGEXP '$frght') AND `paid`=0 AND `dateofarrival`='$doa'");
-	}
-else if(!isset($_POST['gr_no'])&&!isset($_POST['mrk'])&&!isset($_POST['frght'])&&isset($_POST['doa'])){
-		$doa = $_POST['doa'];
-		$sql = ("SELECT * FROM `challan` WHERE `paid`=0 AND `dateofarrival`='$doa'");
-	}
-else if(isset($_POST['gr_no'])&&isset($_POST['mrk'])&&!isset($_POST['frght'])&&isset($_POST['doa'])){
-		$doa = $_POST['doa'];
-		$mrk = $_POST['mrk'];
-		$mrk = '^'.$mrk.'[a-zA-Z0-9]*';
-		$gr_no= $_POST['gr_no'];
-		$gr_no = '^'.$gr_no.'[0-9]*';
-		$sql = ("SELECT * FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`marka` REGEXP '$mrk') AND `paid`=0 AND `dateofarrival`='$doa'");
-	}
-else{
-		$sql = ("SELECT * FROM `challan` WHERE `paid`=0");
-	}
-		
+
 		$result = $db->query($sql) or die("Sql Error :".$db->error);
 		$count = 0;
 		$readonly = 'readonly';
 		while($row = mysqli_fetch_array($result)){
 			echo '<tr class="j">';
 				$count++;
-				if(preg_match($ptrn_update,$perm)||preg_match($ptrn_paid,$perm)){
+				if(preg_match($ptrn_update,$perm)){
 					echo '<td><input type="checkbox" id="'.$count.'" name="count[]" value="'.$count.'" >
 					<input type="hidden" name="'.$count.'_id_value" value="'.$row['ID'].'"></td>';
 				}
 				echo '
-				<td><input class="'.$count.'_read" type="number" name="'.$count.'_g_r_no" value="'.$row['G.R.No'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_marka" value="'.$row['marka'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="number" name="'.$count.'_nag" value="'.$row['nag'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_particular" value="'.$row['particular'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
+				<td>'.$row['challanNo'].'</td>
+				<td>'.$row['G.R.No'].'</td>
+				<td>'.$row['marka'].'</td>
+				<td>'.$row['nag'].'</td>
+				<td>'.$row['weight'].'</td>
 				<td><input class="'.$count.'_read" type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
-				<td><input type="text" name="'.$count.'_addedby" value="'.$row['addedby'].'" readonly></td>
-				<td><input class="'.$count.'_read" type="" name="'.$count.'_dateofarrival" value="'.$row['dateofarrival'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_truckno" value="'.$row['truckno'].'" '.$readonly.'></td>
-				<td><input class="'.$count.'_read" type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.'></td>
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.' list="party_list">
+				<datalist id="party_list">
+				<select>';
+					$sql1="SELECT `name` FROM `party`";
+					$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
+					while($row1 = mysqli_fetch_array($result1)){
+						echo '<option>'.$row1['name'].'</option>';
+					}
+				echo '</select>
+				</datalist></td>
+				<td>'.$row['dateofarrival'].'</td>
+				<td>'.$row['truckno'].'</td>
 			</tr>';
 		}
 ?>
-<script><?php $j=$count;
+<script>
+	<?php
+		$j=$count;
 		if(preg_match($ptrn_update,$perm)){
 		while($count>0){
 			echo '$("#'.$count.'").click(function(){
@@ -151,18 +80,19 @@ else{
 		}
 	?>
 	$("#all_select").click(function(){
-			$('input:checkbox').not(this).attr('checked', this.checked);
-			<?php 
-				if(preg_match($ptrn_update,$perm)){
-				while($j>0){echo '
-					if($(this).is(":checked")){
-						$(".'.$j.'_read").attr("readonly",false);
-					}
-					else{
-						$(".'.$j.'_read").attr("readonly",true);
-					}';
-					$j--;
+	$('input:checkbox').not(this).attr('checked', this.checked);
+		<?php 
+			if(preg_match($ptrn_update,$perm)){
+			while($j>0){echo '
+				if($(this).is(":checked")){
+					$(".'.$j.'_read").attr("readonly",false);
 				}
-				}
-			?>
-		});</script>
+				else{
+					$(".'.$j.'_read").attr("readonly",true);
+				}';
+				$j--;
+			}
+			}
+		?>
+	});
+</script>

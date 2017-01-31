@@ -19,7 +19,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 	echo $sql = ("INSERT INTO `users` (`username`, `password`, `access`, `marka`, `partyname`, `address`) VALUES ('$username', '$password', '$permission', '$marka', '$name', '$address')");
 	$result = $db->query($sql) or die("Sql Error :" . $db->error);
 	if($result){
-		header('Location: index.php?create=1');
+		/*header('Location: index.php?create=1');*/
+		header('Location: other/home.php?create=1');
     }
 	
 }
