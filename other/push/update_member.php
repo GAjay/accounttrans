@@ -7,7 +7,6 @@
 			$id = $_POST['id'];
 			$name=$_POST['name'];
 			$address = $_POST['address'];
-			$marka = $_POST['marka'];
 			foreach($_POST['permission'] as $selected) {
 				if($permission==null){
 					$permission = $selected;
@@ -24,7 +23,7 @@
 					$ingredients = $ingredients.", ".$selected;
 				}
 			}
-			$sql="UPDATE `users` SET `access`='$permission',`marka`='$marka',`partyname`='$name', `connected_parties`='$ingredients', `address`='$address' WHERE `ID`='$id'";
+			$sql="UPDATE `users` SET `access`='$permission',`partyname`='$name', `connected_parties`='$ingredients', `address`='$address' WHERE `ID`='$id'";
 			$result = $db->query($sql) or die('sql Error: '.$db->error);
 			if($result){
 				header('Location: ../member.php?add=true'); 

@@ -22,10 +22,10 @@
 	<head>
 		<link rel="stylesheet" href="../css/main.css">
 		<script type="text/javascript" src="../js/jquery-1.4.1.min.js"></script>
-		<script> var user = "<?php echo $user;?>";var perm = "<?php echo $perm;?>";</script>
+		<script> var user = "<?php echo $user;?>";var perm = "<?php echo $perm;?>";var pakka=0;</script>
 		<style>
 			input[type="text"],input[type="number"],input[type="date"]{
-				width:130px;
+				width:100px;
 			}
 		</style>
 	</head>
@@ -51,31 +51,30 @@
 		<br><BR><br><div id="same" align="lef"t"></div><script id="scr"></script>
 			<table id="main_table">
 				<tr class="mh">
-					<?php
-						if(preg_match($ptrn_update,$perm)){
-							echo '<th></th>';
-						}
-					?>
+					<th>#</th>
 					<th>Challan No</th>
 					<th>G.R.No</th>
 					<th>Marka</th>
 					<th>Nag</th>
+					<th>particular</th>
 					<th>weight</th>
 					<th>freight</th>
 					<th>partyname</th>
-					<th>dateofarrival</th>
+					<th>dateofdeparture</th>
 					<th>truckno</th>
 				</tr>
 				<tr class="fl">
+					<th>
 					<?php
 						if(preg_match($ptrn_update,$perm)){
-							echo '<th><input type="checkbox" id="all_select" ></th>';
+							echo '<input type="checkbox" id="all_select" >';
 						}
 					?>
+					</th>
 					<th></th>
 					<th><input type="number" id="grn" list="grn_li"></th>
 					<?php
-						$sql = ("SELECT `G.R.No` FROM `challan` WHERE `paid`=0 group by `G.R.No`");
+						$sql = ("SELECT `G.R.No` FROM `challan` WHERE `paid`=0 AND `is_pakka`=0 group by `G.R.No`");
 						$result = $db->query($sql) or die("Sql Error :" . $db->error);
 						echo '<datalist id="grn_li"><select>';
 						while($row = mysqli_fetch_array($result)){
@@ -86,7 +85,7 @@
 					<th><input type="text" id="mrk" list="mrk_li"></th>
 					<datalist id="mrk_li"><select id="mrk_li_option">
 						<?php
-							$sql = ("SELECT `marka` FROM `challan` WHERE `paid`=0 group by marka");
+							$sql = ("SELECT `marka` FROM `challan` WHERE `paid`=0 AND `is_pakka`=0 group by marka");
 							$result = $db->query($sql) or die("Sql Error :" . $db->error);
 							while($row = mysqli_fetch_array($result)){
 								echo '<option>'.$row['marka'].'</option>';
@@ -95,42 +94,61 @@
 					</select></datalist>
 					<th></th>
 					<th></th>
-					<th><input type="text" id="frght"></th>
-					<th><input type="text" id="party_search" value="default" list="party_list"></th>
-					<th><input type="date" id="doa"></th>
+					<th></th>
+					<th></th>
+					<th><select id="party_search">
+						<?php	$sql1="SELECT * FROM `party`";
+							$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
+							while($row1 = mysqli_fetch_array($result1)){
+								if($row1['name']=='Default'){
+									echo '<option value="'.$row1['ID'].'" selected>'.$row1['name'].'</option>';
+								}
+								else{
+									echo '<option value="'.$row1['ID'].'">'.$row1['name'].'</option>';
+								}
+							}
+						?>
+					</select></th>
+					<th><input type="text" id="dod" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{2}" placeholder="dd-mm-yy"></th>
 					<th></th>
 				</tr>
 				<?php
-					$sql = ("SELECT * FROM `challan` WHERE `paid`=0 AND partyname='Default'");
+					$sql = ("SELECT *, DATE_FORMAT(`dateofdeparture`,'%d-%m-%Y') as `dateofdeparture` FROM `challan` WHERE `paid`=0 AND partyname='1' AND `is_pakka`=0");
 					$result = $db->query($sql) or die("Sql Error :" . $db->error);
 					$count = 0;
 					while($row = mysqli_fetch_array($result)){
 						echo '<tr class="j">';
 							$count++;
+							echo '<td><label>';
 							if(preg_match($ptrn_update,$perm)){
-								echo '<td><input type="checkbox" id="'.$count.'" name="count[]" value="'.$count.'" >
-								<input type="hidden" name="'.$count.'_id_value" value="'.$row['ID'].'"></td>';
+								echo '<input type="checkbox" id="'.$count.'" name="count[]" value="'.$count.'" >
+								<input type="hidden" name="'.$count.'_id_value" value="'.$row['ID'].'">';
 							}
-							echo '
+							echo $count.'</label></td>
 							<td>'.$row['challanNo'].'</td>
 							<td>'.$row['G.R.No'].'</td>
 							<td>'.$row['marka'].'</td>
 							<td>'.$row['nag'].'</td>
+							<td>'.$row['particular'].'</td>
 							<td>'.$row['weight'].'</td>
-							<td><input class="'.$count.'_read" type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>
-							<td><input class="'.$count.'_read" type="text" name="'.$count.'_partyname" value="'.$row['partyname'].'" '.$readonly.' list="party_list">
-								<datalist id="party_list">
-								<select>';
-									$sql1="SELECT `name` FROM `party`";
-									$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
-									while($row1 = mysqli_fetch_array($result1)){
-										echo '<option>'.$row1['name'].'</option>';
+							<td><input class="'.$count.'_read" type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>';
+							$p_id = $row['partyname'];
+							echo '<td>
+								<select name="'.$count.'_partyname">';
+									$sql2="SELECT * FROM `party`";
+									$result2 = $db->query($sql2) or die("Sql Error :" . $db->error);
+									while($row2 = mysqli_fetch_array($result2)){
+										if($row2['ID']==$p_id){
+											echo '<option value="'.$row2['ID'].'" selected>'.$row2['name'].'</option>';
+										}
+										else{
+											echo '<option value="'.$row2['ID'].'">'.$row2['name'].'</option>';
+										}
 									}
 								
 								echo '</select>
-								</datalist>
 							</td>
-							<td>'.$row['dateofarrival'].'</td>
+							<td>'.$row['dateofdeparture'].'</td>
 							<td>'.$row['truckno'].'</td>
 						</tr>';
 					}
@@ -193,45 +211,48 @@
 		$('#loading').show();
 		var scr;
 		if(count == 0){
-			var new_doa = null;
+			var new_dod = null;
 			$('#update').remove();
 			$('#paid').remove();
 			$('#fn').remove();
 			$('#main_table').find('tr').remove();
-			scr="$('#dateofarrival').change(function(){$('#1_dateofarrival').val($(this).val());});";
-			same='<label>Truck No: </label><input type="text" name="truckno" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>Challan No: </label><input type="number" name="challan" required><br><br><label>Date of Arrival: </label><input type="date" id="dateofarrival" name="dateofarrival" required><br><br>';
-			html = '<tr><th>G.R.No</th><th>Marka</th><th>Nag</th><th>Particular</th><th>Weight</th><th>Freight</th><th>Party Name</th><th>Date of Arrival</th></tr>';
+			scr="$('#dateofdeparture').change(function(){$('#1_dateofdeparture').val($(this).val());});";
+			same='<label>Truck No: </label><input type="text" name="truckno" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>Challan No: </label><input type="number" name="challan" required><br><br><label>Date of Arrival: </label><input type="text" required="" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{2}" placeholder="dd-mm-yy" id="dateofdeparture" name="dateofdeparture" required><br><br>';
+			html = '<tr><th>#</th><th>G.R.No</th><th>Marka</th><th>Nag</th><th>Particular</th><th>Weight</th><th>Freight</th><th>Party Name</th><th>Date of Arrival</th><th>Pakka/Kachcha</th></tr>';
 			$('#same').html(same);
 			$('#main_table').append(html);
 		}
 		else{
-			new_doa = $('#dateofarrival').val();
+			new_dod = $('#dateofdeparture').val();
 		}
 			count++;
 		html = '<tr class="'+count+'">'+
-				'<td><input type="number" name="'+count+'_g_r_no" ></td>'+
-				'<td><input type="text" name="'+count+'_marka"></td>'+
-				'<td><input type="number" name="'+count+'_nag"></td>'+
-				'<td><input type="text" name="'+count+'_particular"></td>'+
-				'<td><input type="text" name="'+count+'_weight"></td>'+
+				'<td>'+count+'</td>'+
+				'<td><input type="number" name="'+count+'_g_r_no" required></td>'+
+				'<td><input type="text" name="'+count+'_marka" required></td>'+
+				'<td><input type="number" name="'+count+'_nag" required></td>'+
+				'<td><input type="text" name="'+count+'_particular" required></td>'+
+				'<td><input type="text" name="'+count+'_weight" required></td>'+
 				'<td><input type="text" name="'+count+'_freight"></td>'+
-				'<td id="'+count+'_apnd"><input type="text" name="'+count+'_partyname" list="party_list"><datalist id="party_list"><select>'+
+				'<td id="'+count+'_apnd"><select name="'+count+'_partyname">'+
 				'<?php	
-					$sql1="SELECT `name` FROM `party`"; 
+					$sql1="SELECT * FROM `party`"; 
 					$result1 = $db->query($sql1) or die("Sql Error :" . $db->error); 
+					echo "<option value=".null .">--select--</option>";
 					while($row1 = mysqli_fetch_array($result1)){ 
-					echo "<option>".$row1['name']."</option>"; 
+					echo "<option value=\'".$row1['ID']."\'>".$row1['name']."</option>"; 
 					} 
 				?>'+
-				'</select></datalist></td>'+
-				'<td><input type="date" id="'+count+'_dateofarrival" name="'+count+'_dateofarrival"></td>'+
+				'</select></td>'+
+				'<td><input type="text" required="" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{2}" placeholder="dd-mm-yy" id="'+count+'_dateofdeparture" name="'+count+'_dateofdeparture"></td>'+
+				'<td><select name="'+count+'_is_pakka"><option value="1" selected>Pakka</option><option value="0">Kachcha</option></select></td>'+
 				'</tr>';
 		$('#main_table').append(html);
 		if(count-1==0){
 			$('#scr').append(scr);
 		}
-		if(new_doa != null){
-			$('#'+count+'_dateofarrival').val(new_doa);
+		if(new_dod != null){
+			$('#'+count+'_dateofdeparture').val(new_dod);
 		}
 		else{
 			$("#add").html('Add Row');

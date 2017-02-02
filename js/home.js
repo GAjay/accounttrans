@@ -1,12 +1,12 @@
 	$(document).ready(function(){
-		var dataString;	var party_search = "default";	var grn = '';	var mrk=''; var frght=''; var doa='';
+		var dataString;	var party_search = "1";	var grn = '';	var mrk=''; var frght=''; var dod='';
 		$('#loading').hide();
 		$('#party_search').bind('keyup change', function(){
 			$('.j').remove();
 			$('#loading').show();
 			party_search = $(this).val();
 			
-			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&doa='+doa+'&party='+party_search;
+			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&dod='+dod+'&party='+party_search+'&pakka='+pakka;
 			console.log(dataString);
 			$.ajax
 			({
@@ -26,7 +26,7 @@
 			$('#loading').show();
 			$('#mrk_li_option').find('option').remove();
 			grn = $(this).val();
-			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&doa='+doa+'&party='+party_search;
+			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&dod='+dod+'&party='+party_search+'&pakka='+pakka;
 			console.log(dataString);
 			$.ajax
 			({
@@ -53,7 +53,7 @@
 			});
 			$('#mrk').val(null);
 			$('#frght').val(null);
-			$('#doa').val(null);
+			$('#dod').val(null);
 		});
 //--------------------------------------------------------------------------------		
 //---------------------------------------------------------------------------------
@@ -62,7 +62,7 @@
 			var dataString;
 			$('.j').remove();
 			$('#loading').show();
-			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&doa='+doa+'&party='+party_search;
+			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&dod='+dod+'&party='+party_search+'&pakka='+pakka;
 			console.log(dataString);
 			$.ajax
 			({
@@ -77,7 +77,7 @@
 				}
 			});
 			$('#frght').val(null);
-			$('#doa').val(null);
+			$('#dod').val(null);
 		});
 //--------------------------------------------------------------------------------		
 //---------------------------------------------------------------------------------		
@@ -86,7 +86,7 @@
 			var dataString;
 			$('.j').remove();
 			$('#loading').show();
-			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&doa='+doa+'&party='+party_search;
+			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&dod='+dod+'&party='+party_search+'&pakka='+pakka;
 			console.log(dataString);
 			$.ajax
 			({
@@ -100,16 +100,18 @@
 					$('#main_table').append(data);
 				}
 			});
-			$('#doa').val(null);
+			$('#dod').val(null);
 		});
 //--------------------------------------------------------------------------------		
 //---------------------------------------------------------------------------------
-		$('#doa').change(function(){
-			doa = $(this).val();
+		$('#dod').change(function(){
+			if($(this).val()!=''){
+			dod = $(this).val().substring(6,8)+"-"+$(this).val().substring(3,5)+"-"+$(this).val().substring(0,2);}else{dod='';}
+			console.log(dod);
 			var dataString;
 			$('.j').remove();
 			$('#loading').show();
-			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&doa='+doa+'&party='+party_search;
+			dataString = 'gr_no='+grn+'&mrk='+mrk+'&frght='+frght+'&dod='+dod+'&party='+party_search+'&pakka='+pakka;
 			console.log(dataString);
 			$.ajax
 			({

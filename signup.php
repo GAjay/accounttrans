@@ -45,10 +45,6 @@
 					<label><input type="checkbox" id="3" name="permission[]" value="3"> All</label>
 				</div>
 				<div class="form__field">
-					<label>Marka</label>
-					<input type="text" name="marka" class="form__input" placeholder="Marka" required>
-				</div>
-				<div class="form__field">
 					<label>Address</label>
 					<textArea name="address" class="form__input" required>Enter Address</textArea>
 				</div>

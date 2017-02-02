@@ -18,8 +18,7 @@
 		
 		<div>
 			<h1 align="center">Payment Information </h1>
-			<label>Members: <select id="member">
-			<option>--select--</option>
+			<label>Members: <input type="text" id="member" list="member_list"><datalist id="member_list"><select >
 			<?php
 				$sql = ("SELECT `partyname` FROM `users`");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);
@@ -27,10 +26,8 @@
 					echo '<option>'.$row['partyname'].'</option>';
 				}
 			?>
-			</select></label>
-			<label>Paties: <select id="party">
-				<option>--select--</option>
-			</select></label>
+			</select></datalist></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<label>Paid Date: <input type="text" id="paid_at" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-[0-9]{2}" placeholder="dd-mm-yy"><label>
 		</div><br><Br>
 		<div id="main_table" align="center">
 		</div>
@@ -42,36 +39,26 @@
 
 <script>
 $('#loading').hide();
-$('#member').change(function(){
+$('#member, #paid_at').change(function(){
+	var dataString;
 	$('#loading').show();
 	$('#main_table').hide();
-	$('#party').find('option').remove();
-	dataString = 'member='+$(this).val();
+	if($('#paid_at').val()!=''){
+		dataString = 'member='+$('#member').val()+'&paid_at='+$('#paid_at').val();
+	}
+	else{
+		dataString = 'member='+$('#member').val();
+	}
 	$.ajax({
 		type: "POST",
-		url: "get/get_member_party.php",
+		url: "get/get_member_table.php",
 		data: dataString,
 		cache: false,
 		success: function(data)
 		{
-			$('#party').append(data);
-		}
-	});
-});
-$('#party').change(function(){
-	$('#loading').show();
-	$('#main_table').hide();
-	dataString = 'partyname='+$(this).val();
-	$.ajax({
-		type: "POST",
-		url: "get/get_member_party.php",
-		data: dataString,
-		cache: false,
-		success: function(data)
-		{
-			$('#loading').hide();
-			$('#main_table').show();
 			$('#main_table').html(data);
+			$('#loading').hide();
+			$("#main_table").show();
 		}
 	});
 });
