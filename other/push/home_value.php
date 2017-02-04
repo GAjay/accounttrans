@@ -1,7 +1,7 @@
 <?php
 	include('../../configure/config.php');
-	echo $user = $_GET['user'];
-	echo $perm = $_GET['perm'];
+	$user = $_GET['user'];
+	$perm = $_GET['perm'];
 	$msg=null;
 	$sql=null;
 	if($_SERVER['REQUEST_METHOD']=='POST'){
@@ -18,7 +18,15 @@
 				$freight = $_POST[$upload_record.'_freight'];
 				$addedby = $user;
 				$paid = 0;
-				$dateofarrival = $_POST[$upload_record.'_dateofarrival'];
+				$d = explode('-',$_POST[$upload_record.'_dateofdeparture']);
+				$i=0;$n;
+				foreach($d as $p){
+					$n[$i]=$p;
+					$i++;
+				}
+				$dateofdeparture = '20'.$n[2].'-'.$n[1].'-'.$n[0];
+				$dateofdeparture = Date($dateofdeparture);
+				
 				$drivername = $_POST[$upload_record.'_drivername'];
 				$partyname = $_POST[$upload_record.'_partyname'];
 				if($partyname==''){
@@ -26,24 +34,24 @@
 				}
 				$created_at = date( 'Y-m-d');
 				$updated_at = date( 'Y-m-d');
+				$is_pakka = $_POST[$upload_record.'_is_pakka'];
 				if($GRNo!=''){
-				$sql = ("INSERT INTO `challan`(`challanNo`, `G.R.No`, `marka`, `nag`, `particular`, `weight`, `freight`, `addedby`, `paid`, `dateofarrival`, `truckno`, `partyname`, `created_at`, `updated_at`) VALUES ('$challan','$GRNo', '$marka', '$nag', '$particular', '$weight', '$freight', '$addedby', '$paid', '$dateofarrival', '$truckno', '$partyname', '$created_at', '$updated_at')");
+				$sql = ("INSERT INTO `challan`(`challanNo`, `G.R.No`, `marka`, `nag`, `particular`, `weight`, `freight`, `addedby`, `paid`, `dateofdeparture`, `truckno`, `partyname`, `created_at`, `updated_at`, `is_pakka`) VALUES ('$challan','$GRNo', '$marka', '$nag', '$particular', '$weight', '$freight', '$addedby', '$paid', '$dateofdeparture', '$truckno', '$partyname', '$created_at', '$updated_at', $is_pakka)");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);
 				}
 				$upload_record--;
 			}
 			$msg = 'New Challan uploaded successfully';
 		}
-		else{echo'else';
+		else{
 			if($_POST['fn']=='update_record'){
 				if(isset($_POST['count'])){
 				foreach($_POST['count'] as $upload_record){
 					$id = $_POST[$upload_record.'_id_value'];
-					$weight = $_POST[$upload_record.'_weight'];
 					$freight = $_POST[$upload_record.'_freight'];
 					$partyname = $_POST[$upload_record.'_partyname'];
 					$updated_at = date( 'Y-m-d');
-					$sql = ("UPDATE `challan` SET `weight`='$weight', `freight`='$freight', `partyname`='$partyname', `updated_at`='$updated_at' WHERE `ID`='$id'");
+					$sql = ("UPDATE `challan` SET `freight`='$freight', `partyname`='$partyname', `updated_at`='$updated_at' WHERE `ID`='$id'");
 				$result = $db->query($sql) or die("Sql Error :" . $db->error);}
 				$msg = 'Selected Challan updated successfully';}
 				else{
@@ -51,6 +59,11 @@
 				}
 			}
 		}
+		if(isset($_GET['pakka'])){
+			header('Location: ../pakka_challan.php?user='.$user.'&perm='.$perm.'&msg='.$msg);
+		}
+		else{
 			header('Location: ../home.php?user='.$user.'&perm='.$perm.'&msg='.$msg);
+		}
 	}
 ?>

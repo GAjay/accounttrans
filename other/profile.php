@@ -14,7 +14,6 @@
 		<h4>Hello <?php echo $row['partyname'];?> You Can Change Your profile Attribute</h4><br>
 		<form action="update.php" method="post">
 			<label>Name: </label><input type="text" name="name" value="<?php echo $row['partyname'];?>"><br><br>
-			<label>Marka: </label><input type="text" name="marka" value="<?php echo $row['marka'];?>"><br><br>
 			<label>Address: </label><textarea name="address"><?php echo $row['address'];?></textarea><br><br>
 			<label>Username: </label><input type="text" id="username" name="username" value="<?php echo $row['username'];?>">
 			<input type="hidden" id="check" name="check" value="<?php echo $row['username'];?>">

@@ -58,7 +58,6 @@
 						<form action="push/update_member.php" method="POST" onkeypress="return event.keyCode != 13;">
 							<h1  align="center">Update '.$row['partyname'].'\'s Information</h1>
 							<label>Name: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="name" value="'.$row["partyname"].'"></label><br><br>
-							<label>Makra: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="marka" value="'.$row["marka"].'"></label><br><br>
 							Permissions:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<label><input type="checkbox" id="1" name="permission[]" value="1"';
 							$prem2=$row['access'];
@@ -78,17 +77,20 @@
 									echo '<ul>';
 									if($row['connected_parties']!=''){
 									foreach($parties as $i){
+										$party_sql = "SELECT * FROM `party` WHERE `ID`='$i'";
+										$party_result = $db->query($party_sql) or die("Sql Error :" . $db->error);
+										$party_row = mysqli_fetch_array($party_result);
 										echo '<li onclick="this.parentNode.removeChild(this);">
-											<input type="hidden" name="ingredients[]" value="'.$i.'" />
-											'.$i.'
+											<input type="hidden" name="ingredients[]" value="'.$party_row['ID'].'" />
+											'.$party_row['address/mobile'].'
 										</li>';
 									}
 									}echo '</ul>';
-								echo '<select onchange="selectIngredient(this);">';
-									$sql1 = ("SELECT `name` FROM `party`");
+								echo '<select onchange="selectParty(this);">';
+									$sql1 = ("SELECT * FROM `party`");
 										$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
 										while($row1 = mysqli_fetch_array($result1)){
-											echo '<option>'.$row1['name'].'</option>';
+											echo '<option value="'.$row1['ID'].'">'.$row1['address/mobile'].'</option>';
 										}
 								echo '</select></label>
 							</div><br><BR>
@@ -113,7 +115,6 @@
 					<th>#</th>
 					<th>Name</th>
 					<th>Username</th>
-					<th>Marka</th>
 					<th>Access</th>
 					<th>Connected Parties</th>
 					<th>Address or Mobile No</th>
@@ -130,14 +131,20 @@
 								<td><label><input type="radio" name="id" value="'.$row['ID'].'">'.$i.'</label></td>
 								<td>'.$row['partyname'].'</td>
 								<td>'.$row['username'].'</td>
-								<td>'.$row['marka'].'</td>
 								<td>';
 								$perm1=$row['access'];
 								if(preg_match($ptrn_update,$perm1)){echo 'All&nbsp;&nbsp;&nbsp;';}
 								if(preg_match($ptrn_paid,$perm1)){echo 'Paid&nbsp;&nbsp;&nbsp;';}
-								if(preg_match($ptrn_add,$perm1)){echo 'Add';}
+								if(preg_match($ptrn_add,$perm1)){echo 'Add';}echo '</td><td>';
+								$p_id = explode(', ',$row['connected_parties']);
+								foreach($p_id as $id){
+									$p_sql = "SELECT * FROM `party` WHERE `ID`='$id'";
+									$p_result = $db->query($p_sql) or die("Sql Error :" . $db->error);
+									$p_row = mysqli_fetch_array($p_result);
+									echo $p_row['address/mobile'].'<br>';
+								}
+								
 								echo '</td>
-								<td>'.$row['connected_parties'].'</td>
 								<td><textarea readonly>'.$row['address'].'</textarea></td>
 							</tr>';
 							$i++;	
@@ -167,7 +174,7 @@
 	});
 </script>
 <script>
-	function selectIngredient(select)
+	function selectParty(select)
 {
   var option = select.options[select.selectedIndex];
   var ul = select.parentNode.getElementsByTagName('ul')[0];
@@ -194,10 +201,9 @@
 
 
 
-function selectIngredient(select)
+function selectParty(select)
 {
   var $ul = $(select).prev('ul');
-   
   if ($ul.find('input[value=' + $(select).val() + ']').length == 0)
     $ul.append('<li onclick="$(this).remove();">' +
       '<input type="hidden" name="ingredients[]" value="' + 

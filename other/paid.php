@@ -26,33 +26,23 @@
 	<body style="padding:2%"><br><BR>
 		<div align="center">
 			<h3>Select party to show challan</h3><br>
-			<label>Part Name: <select id="party_select">
-				<option>--Select--</option>
+			<label>Party Name: <select id="party_select"><option selected>--select--</option>
 			<?php
-				$sql1="SELECT `name` FROM `party`";
+				$sql1="SELECT * FROM `party`";
 				$result1 = $db->query($sql1) or die("Sql Error :" . $db->error);
 				while($row1 = mysqli_fetch_array($result1)){
-					echo '<option>'.$row1['name'].'</option>';
+					echo '<option value="'.$row1['ID'].'">'.$row1['name'].'</option>';
 				}
 			?>
 			</select></label><br><br><br>
 		
-		<form action="push/paid_value.php?user=<?php echo $user;?>&perm=<?php echo $perm;?>" method="post" onkeypress="return event.keyCode != 13;">
-			<button id="update" onclick="update_fn()" type="submit">Update Challan</button>   
-			<button id="paid" onclick="paid_fn()" type="submit">Paid</button>
-			<input type="hidden" id="upload_record" name="upload_record">
-			<br><BR><br>
-			<table id="main_table">
-			</table>
-			<script type="text/javascript" src="../js/home.js"></script>
-			<input id="fn" type="hidden" name="fn">
-	
-		</form>
-		<img align="center" src="../img/loading.gif" id="loading" height="90px">
+		
+			<div id="main_div"></div>
+			<img align="center" src="../img/loading.gif" id="loading" height="90px">
 		</div>
 		
 		
-		</body>
+	</body>
 </html>
 
 
@@ -60,15 +50,9 @@
 <script>
 	$('form').hide();
 	$('#loading').hide();
-	function update_fn(){
-		$('#fn').val('update_record');
-	};
-	function paid_fn(){
-		$('#fn').val('paid_record');
-	};
 	$('#party_select').change(function(){
 		$('#loading').show();
-		$('#main_table').find('tr').remove();
+		$('#main_div').hide();
 		dataString = 'party='+$(this).val();
 		$.ajax({
 			type: "POST",
@@ -79,8 +63,8 @@
 				{
 					
 					$('#loading').hide();
-					$('#main_table').append(data);
-					$('form').show();
+					$('#main_div').show();
+					$('#main_div').html(data);
 				}
 		});
 	});

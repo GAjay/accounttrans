@@ -3,7 +3,7 @@ include('../../configure/config.php');
 if(isset($_POST['gr_no']))
 {
 	$gr_no= $_POST['gr_no'];
-	$sql = ("SELECT `marka` FROM `challan` WHERE `G.R.No` = '$gr_no' group by marka");
+	$sql = ("SELECT `marka` FROM `challan` WHERE `G.R.No` = '$gr_no' AND `is_pakka`=0 group by marka");
 }
 else{
 	$sql = ("SELECT `marka` FROM `challan` WHERE `paid` = 0 group by marka");
