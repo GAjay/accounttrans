@@ -1,6 +1,4 @@
-<?php
-	
-?><html lang="en">
+<html lang="en">
 
 	<head>
 		<meta charset="utf-8">
@@ -13,7 +11,7 @@
 	</head>
 
 	<body class="align">
-		<h1 style="color:white;">New India Transport Company</h1>
+		<!--h1 style="color:white;">New India Transport Company</h1-->
 		<h3 style="color:white;">Create Member</h3><br>
 		<div class="grid">
 
@@ -47,10 +45,6 @@
 					<label><input type="checkbox" id="3" name="permission[]" value="3"> All</label>
 				</div>
 				<div class="form__field">
-					<label>Marka</label>
-					<input type="text" name="marka" class="form__input" placeholder="Marka" required>
-				</div>
-				<div class="form__field">
 					<label>Address</label>
 					<textArea name="address" class="form__input" required>Enter Address</textArea>
 				</div>
@@ -58,7 +52,6 @@
 					<input type="submit" id="submit">
 				</div>
 			</form>
-			<p class="text--center">Go to <a href="index.php">Login Page</a></p>
 		</div>
 	</body>
 

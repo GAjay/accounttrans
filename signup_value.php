@@ -6,7 +6,6 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 	$address = $_POST['address'];
-	$marka = $_POST['marka'];
 	foreach($_POST['permission'] as $selected) {
 		if($permission==null){
 			$permission = $selected;
@@ -16,10 +15,11 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 		}
 	}
 	$password = md5($password);
-	echo $sql = ("INSERT INTO `users` (`username`, `password`, `access`, `marka`, `partyname`, `address`) VALUES ('$username', '$password', '$permission', '$marka', '$name', '$address')");
+	echo $sql = ("INSERT INTO `users` (`username`, `password`, `access`, `partyname`, `address`) VALUES ('$username', '$password', '$permission', '$name', '$address')");
 	$result = $db->query($sql) or die("Sql Error :" . $db->error);
 	if($result){
-		header('Location: index.php?create=1');
+		/*header('Location: index.php?create=1');*/
+		header('Location: other/home.php?create=1');
     }
 	
 }

@@ -1,4 +1,6 @@
 <?php
+	
+	
 	include('configure/config.php');
 	$error = null;
 	if(isset($_GET['create'])){
@@ -14,21 +16,26 @@
 		echo '<h3 style="color:yellow;">Updated your profile</h3>';
 	}
 	session_start();
+	if(isset($_SESSION['login_user']) && $_SESSION['permission'] ){
+		header('Location: welcome.php');
+	}
 	if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 		$myusername = mysqli_real_escape_string($db,$_POST['username']);
 		$mypassword = mysqli_real_escape_string($db,$_POST['password']); 
 		$mypassword = md5($mypassword);
 
-		$sql = "SELECT `partyname`, `access` FROM users WHERE username = '$myusername' and password = '$mypassword'";
+		$sql = "SELECT * FROM users WHERE username = '$myusername' and password = '$mypassword'";
 		$result = mysqli_query($db,$sql);
 		$row = mysqli_fetch_array($result);
 
 		$count = mysqli_num_rows($result);
 
 		if($count == 1) {
-			$_SESSION['login_user']= $myusername;
+			$_SESSION['login_user'] = $myusername;
+			$_SESSION['ID']= $row['ID'];
 			$_SESSION['permission'] = $row['access'];
+			$_SESSION['last_paid_date'] = $row['last_paid_date'];
             header("Location: welcome.php");
 		}
 		else {
@@ -72,7 +79,7 @@
 
 			</form>
 
-			<p class="text--center"><a href="signup_check.php">Create Member</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p>
+			<!--p class="text--center"><a href="signup_check.php">Create Member</a> <svg class="icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="assets/images/icons.svg#arrow-right"></use></svg></p-->
 			
 			<h4 style="color:red;"><?php echo $error ?></h4>
 

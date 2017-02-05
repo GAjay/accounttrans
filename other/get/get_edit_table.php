@@ -8,7 +8,6 @@
 	$party=null;$gr_no=null;$mrk=null;$frght=null;$dod=null;
 		$is_pakka=$_POST['pakka'];
 		$party = $_POST['party'];
-		$party = '^'.$party.'$';
 	if(isset($_POST['gr_no'])){
 		$gr_no= $_POST['gr_no'];
 		$gr_no = '^'.$gr_no.'[0-9]*';
@@ -29,10 +28,10 @@
 		}
 		$dod  = '20'.$n[0].'-'.$n[1].'-'.$n[2];
 		$dod  = Date($dod );
-		$sql = ("SELECT *, DATE_FORMAT(`dateofdeparture`,'%d-%m-%Y') as `dateofdeparture` FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`partyname` REGEXP '$party') AND (`marka` REGEXP '$mrk') AND `dateofdeparture`='$dod' AND `paid`=0 AND `is_pakka`='$pakka' AND `is_roundof`=0 AND `is_due`=0 AND `is_print`=0");
+		$sql = ("SELECT *, DATE_FORMAT(`dateofdeparture`,'%d-%m-%Y') as `dateofdeparture` FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND `partyname` = '$party' AND (`marka` REGEXP '$mrk') AND `dateofdeparture`='$dod' AND `paid`=0 AND `is_pakka`='$pakka' AND `is_roundof`=0 AND `is_due`=0");
 	}
 	else{
-		$sql = ("SELECT *, DATE_FORMAT(`dateofdeparture`,'%d-%m-%Y') as `dateofdeparture` FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND (`partyname` REGEXP '$party') AND (`marka` REGEXP '$mrk') AND `paid`=0 AND `is_pakka`='$pakka'  AND `is_roundof`=0 AND `is_due`=0 AND `is_print`=0");
+		$sql = ("SELECT *, DATE_FORMAT(`dateofdeparture`,'%d-%m-%Y') as `dateofdeparture` FROM `challan` WHERE (`G.R.No` REGEXP '$gr_no') AND `partyname` = '$party' AND (`marka` REGEXP '$mrk') AND `paid`=0 AND `is_pakka`='$pakka'  AND `is_roundof`=0 AND `is_due`=0");
 	}
 
 		$result = $db->query($sql) or die("Sql Error :".$db->error);
@@ -48,11 +47,11 @@
 				}
 				echo $count.'</label></td>
 				<td>'.$row['challanNo'].'</td>
-				<td>'.$row['G.R.No'].'</td>
-				<td>'.$row['marka'].'</td>
-				<td>'.$row['nag'].'</td>		
-				<td>'.$row['particular'].'</td>
-				<td>'.$row['weight'].'</td>
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_g_r_n" value="'.$row['G.R.No'].'" '.$readonly.'></td>
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_marka" value="'.$row['marka'].'" '.$readonly.'></td>
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_nag" value="'.$row['nag'].'" '.$readonly.'></td>		
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_particular" value="'.$row['particular'].'" '.$readonly.'></td>
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_weight" value="'.$row['weight'].'" '.$readonly.'></td>
 				<td><input class="'.$count.'_read" type="text" name="'.$count.'_freight" value="'.$row['freight'].'" '.$readonly.'></td>';
 				$p_id = $row['partyname'];
 				echo '<td>
@@ -70,11 +69,11 @@
 					
 					echo '</select>
 				</td>
-				<td>'.$row['dateofdeparture'].'</td>
-				<td>'.$row['truckno'].'</td>';
+				<td><!input type="text" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01])-(0[1-9]|1[012])-20[0-9]{2}" name="'.$count.'_dateofdeparture" value=">'.$row['dateofdeparture'].'<!" '.$readonly.'></td>
+				<td><input class="'.$count.'_read" type="text" name="'.$count.'_truckno" value="'.$row['truckno'].'" '.$readonly.'></td>';
 				if($is_pakka==1){
-					echo '<td><a href="pakka_view.php?challan_id='.$row['ID'].'" >View</a></td>';
-				}				
+					echo '<td></td>';
+				}
 			echo '</tr>';
 		}
 ?>
